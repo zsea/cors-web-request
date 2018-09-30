@@ -69,27 +69,40 @@ chrome.webRequest.onHeadersReceived.addListener(function (details) {
     setHeader(details.responseHeaders, "Access-Control-Allow-Origin", origins[details.requestId] || "*")
     setHeader(details.responseHeaders, "Access-Control-Allow-Credentials", "true");
     setHeader(details.responseHeaders, "Access-Control-Allow-Methods", "*");
-    setHeader(details.responseHeaders, "Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With" || allowHeaders[details.requestId] || "*");
+    setHeader(details.responseHeaders, "Access-Control-Allow-Headers", allowHeaders[details.requestId] || "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With" || "*");
     //console.log("recive", details.responseHeaders, details);
     delete origins[details.requestId];
     delete allowHeaders[details.requestId];
     return { responseHeaders: details.responseHeaders };
 }, { urls: ['*://*/*'] }, ["blocking", "responseHeaders"]);
+/*
+chrome.webRequest.onBeforeRequest.addListener(function (details) {
+    //console.log(details)
+    if (details.url == "https://zsea.github.io/super-web-request/getmanifest") {
+        console.log(details);
+        var mainfest = chrome.runtime.getManifest();
 
+        mainfest = JSON.stringify(mainfest);
+        mainfest = encodeURIComponent(mainfest);
+        mainfest = btoa(mainfest);
+        //details.url = "data:text/plain;charset=UTF-8;base64," + mainfest;
+        return { redirectUrl: "data:text/plain;charset=UTF-8;base64," + mainfest };
+    }
+}, { urls: ["<all_urls>"] },
+    ["blocking"]);*/
 
 /***功能 */
 const actionsMap = {
     "chrome.cookies.get": chrome.cookies.get,
-    "chrome.cookies.getAll": function (details, callback) {
-        console.log(details, callback);
-        chrome.cookies.getAll(details, callback);
-    }
-}
+    "chrome.cookies.getAll": chrome.cookies.getAll
+};
+//console.log(actionsMap);
 /***页面通信 */
 chrome.runtime.onMessageExternal.addListener(function (message, sender, sendResponse) {
     var args = message.args;
     args.push(sendResponse);
     var action = message["action"];
+    //console.log(args);
     if (actionsMap[action]) {
         actionsMap[action].apply(null, args);
         return true;
