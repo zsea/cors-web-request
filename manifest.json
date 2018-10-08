@@ -1,10 +1,13 @@
 {
     "manifest_version": 2,
     "name": "super-web-request",
-    "description": "跨域、修改ua请求插件",
+    "description": "modify ua and allow cors.",
     "version": "0.0.0.1",
     "icons": {
-        "128": "icons/logo_128.png"
+        "128": "icons/logo_128.png",
+        "48": "icons/logo_48.png",
+        "32": "icons/logo_32.png",
+        "16": "icons/logo_16.png"
     },
     "background": { "scripts": ["background.js"]},
     "content_scripts":[
@@ -23,7 +26,7 @@
     ],
     "browser_action": {
         "default_icon": "icons/logo_19.png",
-        "default_title": "跨域、修改ua请求插件"
+        "default_title": "modify ua and allow cors."
     },
     "externally_connectable":{
         "ids":["*"],
